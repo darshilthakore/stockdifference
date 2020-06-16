@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello</title>
+        <!-- <script src="https://d3js.org/d3.v3.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> 
+        
+    </head>
+    
+    <body>
+        <canvas id="chart" width="400" height="400"></canvas>
+        <canvas id="nsechart" width="400" height="400"></canvas>
+        
+
+        <script type="text/javascript">
+            var data = {{ datap | tojson | safe }};
+            // console.log("Datapoints:", data);
+            var datapoints = JSON.parse(data['Data']);
+            console.log("Data:", datapoints);
+            
+            var values = new Array();
+            var customLabels = new Array();
+            datapoints.forEach(function(d) {
+                values.push(d.vale1);
+                customLabels.push(d.dttm);
+            });
+
+            var ctx = 'chart';
+            var lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: customLabels,
+                    datasets: [
+                        {
+                            label: "BSEINDIA " + data['Scripname'],
+                            data: values
+                        }
+                    ]
+                }
+            });
+
+
+            var nseData = {{ datan | tojson | safe }};
+            console.log("NSE Datapoints:", nseData);
+            // var nseDatapoints = nseData['grapthData'];
+            // console.log("Data:", nseDatapoints); 
+
+            var nseValues = new Array();
+            var nseCustomLabels = new Array();
+            nseData.forEach(function(d) {
+                nseValues.push(d[1]);
+                nseCustomLabels.push(d[0]);
+            });                
+
+            var ctx = 'nsechart';
+            var lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: nseCustomLabels,
+                    datasets: [
+                        {
+                            label: "NSEINDIA " + nseData['name'],
+                            data: nseValues
+                        }
+                    ]
+                }
+            });
+
+
+
+
+        </script>
+    </body>
+</html>
+
