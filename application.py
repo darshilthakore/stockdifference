@@ -20,23 +20,23 @@ def accept():
     headers = {'user-agent': 'Python script'}
     companyCode = request.form.get("companyCode")
     companyID = request.form.get("companyID")
-    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=" + companyID + "EQN", headers=headers)
+    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=" + companyID + "EQN", headers=headers).json()
 
-    bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=")
+    bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=").json()
     
     dataBSE = []
 
     
 
-    for i in json.loads(bseData.json()['Data']):
+    for i in json.loads(bseData['Data']):
         timeList[str(i['dttm'])] = []
         dataBSE.append([str(i['dttm']), i['vale1']])
         timeList[str(i['dttm'])].append(i['vale1'])
         # print(i['dttm'])
     print(len(timeList))
 
-    dataNSES = nseData.json()
-    dataNSE = dataNSES['grapthData'] 
+
+    dataNSE = nseData['grapthData'] 
 
     newNse = []
 
@@ -68,19 +68,19 @@ def api(companyCode,companyID):
     headers = {'user-agent': 'Python script'}
     companyCode = companyCode
     companyID = companyID
-    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=" + str(companyID) + "EQN", headers=headers)
+    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=" + str(companyID) + "EQN", headers=headers).json()
 
-    bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=")
+    bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=").json()
     
 
-    for i in json.loads(bseData.json()['Data']):
+    for i in json.loads(bseData['Data']):
         apidata[str(i['dttm'])] = []
        
         apidata[str(i['dttm'])].append(i['vale1'])
     
     
-    dataNSES = nseData.json()
-    dataNSE = dataNSES['grapthData']
+    
+    dataNSE = nseData['grapthData']
     
     for j in dataNSE:
         # print(time.ctime(j[0] / 1000 - (5*60*60) - (30*60)))
