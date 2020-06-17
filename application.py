@@ -5,7 +5,7 @@ import time
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 app = Flask(__name__)
 
-timeList = {}
+
 
 @app.route("/")
 def index():
@@ -13,7 +13,7 @@ def index():
 
 @app.route('/accept', methods=["POST","GET"])
 def accept():
-
+    timeList = {}
     headers = {'user-agent': 'Python script'}
     companyCode = request.form.get("companyCode")
     companyID = request.form.get("companyID")
@@ -39,7 +39,7 @@ def accept():
     for j in dataNSE:
         # print(time.ctime(j[0] / 1000 - (5*60*60) - (30*60)))
         if time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60))) in timeList:
-            print("inside if")
+            
             newNse.append([time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60))), j[1]])
             timeList[time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60)))].append(j[1])
         
@@ -60,6 +60,7 @@ def accept():
 
 @app.route('/api/<companyCode>&<companyID>')
 def api(companyCode,companyID):
+    apidata = {}
     headers = {'user-agent': 'Python script'}
     companyCode = companyCode
     companyID = companyID
@@ -69,22 +70,22 @@ def api(companyCode,companyID):
     
 
     for i in json.loads(bseData.json()['Data']):
-        timeList[str(i['dttm'])] = []
+        apidata[str(i['dttm'])] = []
        
-        timeList[str(i['dttm'])].append(i['vale1'])
+        apidata[str(i['dttm'])].append(i['vale1'])
     
     
     dataNSE = nseData.json()['grapthData']
     
     for j in dataNSE:
         # print(time.ctime(j[0] / 1000 - (5*60*60) - (30*60)))
-        if time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60))) in timeList:
+        if time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60))) in apidata:
             
-            timeList[time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60)))].append(j[1])
+            apidata[time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60)))].append(j[1])
         
-    for i in list(timeList.keys()):
-        if len(timeList[i]) != 2:
-            del timeList[i]
+    for i in list(apidata.keys()):
+        if len(apidata[i]) != 2:
+            del apidata[i]
 
 
-    return timeList
+    return apidata
