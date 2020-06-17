@@ -8,21 +8,21 @@
     </head>
     
     <body>
-        <canvas id="chart" width="400" height="400"></canvas>
-        <canvas id="nsechart" width="400" height="400"></canvas>
-        
+        <canvas id="chart"></canvas>
+        <canvas id="nsechart"></canvas>
+        <canvas id="diffchart"></canvas>
 
         <script type="text/javascript">
-            var data = {{ datap | tojson | safe }};
+            var bseDatapoints = {{ datap | tojson | safe }};
             // console.log("Datapoints:", data);
-            var datapoints = JSON.parse(data['Data']);
-            console.log("Data:", datapoints);
+            var bseData = bseDatapoints;
+            console.log("Data:", bseData);
             
             var values = new Array();
             var customLabels = new Array();
-            datapoints.forEach(function(d) {
-                values.push(d.vale1);
-                customLabels.push(d.dttm);
+            bseData.forEach(function(d) {
+                values.push(d[1]);
+                customLabels.push(d[0]);
             });
 
             var ctx = 'chart';
@@ -32,7 +32,7 @@
                     labels: customLabels,
                     datasets: [
                         {
-                            label: "BSEINDIA " + data['Scripname'],
+                            label: "BSEINDIA ",
                             data: values
                         }
                     ]
@@ -59,7 +59,7 @@
                     labels: nseCustomLabels,
                     datasets: [
                         {
-                            label: "NSEINDIA " + nseData['name'],
+                            label: "NSEINDIA ",
                             data: nseValues
                         }
                     ]
@@ -68,6 +68,34 @@
 
 
 
+            var diffData = {{ timeList | tojson | safe }};
+            console.log("diff data: ", diffData);
+
+            var diffValues = new Array();
+            var diffCustomLabels = new Array();
+            
+            for (x in diffData) {
+                diffValues.push(diffData[x][0] - diffData[x][1]);
+                diffCustomLabels.push(x);
+            }
+
+            console.log("diff val", diffValues);
+            console.log("diff custom", diffCustomLabels);
+
+
+            var ctx = 'diffchart';
+            var lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: diffCustomLabels,
+                    datasets: [
+                        {
+                            label: "Diff BSE - NSE ",
+                            data: diffValues
+                        }
+                    ]
+                }
+            });
 
         </script>
     </body>

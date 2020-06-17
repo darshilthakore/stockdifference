@@ -5,21 +5,30 @@ import time
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 app = Flask(__name__)
 
-@app.route('/')
+timeList = {}
+
+@app.route("/")
 def index():
+    return render_template("home.html")
+
+@app.route('/accept', methods=["POST","GET"])
+def accept():
 
     headers = {'user-agent': 'Python script'}
-    companyCode = 532540
-    companyID = "TCS"
-    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=TCSEQN", headers=headers)
+    companyCode = request.form.get("companyCode")
+    companyID = request.form.get("companyID")
+    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=" + companyID + "EQN", headers=headers)
 
     bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=")
     
+    dataBSE = []
 
-    timeList = []
+    
 
     for i in json.loads(bseData.json()['Data']):
-        timeList.append(str(i['dttm']))
+        timeList[str(i['dttm'])] = []
+        dataBSE.append([str(i['dttm']), i['vale1']])
+        timeList[str(i['dttm'])].append(i['vale1'])
         # print(i['dttm'])
     print(len(timeList))
 
@@ -32,12 +41,50 @@ def index():
         if time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60))) in timeList:
             print("inside if")
             newNse.append([time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60))), j[1]])
+            timeList[time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60)))].append(j[1])
+        
+    for i in list(timeList.keys()):
+        if len(timeList[i]) != 2:
+            del timeList[i]
 
     print(len(newNse))
+    
+    print(len(timeList))
     
     
     # print(nseData.json())
     # print(bseData.json())
 
 
-    return render_template("index.html", datap=bseData.json(), datan=newNse)
+    return render_template("index.html", datap=dataBSE, datan=newNse, timeList=timeList)
+
+@app.route('/api/<companyCode>&<companyID>')
+def api(companyCode,companyID):
+    headers = {'user-agent': 'Python script'}
+    companyCode = companyCode
+    companyID = companyID
+    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=" + str(companyID) + "EQN", headers=headers)
+
+    bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=")
+    
+
+    for i in json.loads(bseData.json()['Data']):
+        timeList[str(i['dttm'])] = []
+       
+        timeList[str(i['dttm'])].append(i['vale1'])
+    
+    
+    dataNSE = nseData.json()['grapthData']
+    
+    for j in dataNSE:
+        # print(time.ctime(j[0] / 1000 - (5*60*60) - (30*60)))
+        if time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60))) in timeList:
+            
+            timeList[time.strftime("%a %b %d %Y %H:%M:%S", time.localtime(j[0] / 1000 - (5*60*60) - (30*60)))].append(j[1])
+        
+    for i in list(timeList.keys()):
+        if len(timeList[i]) != 2:
+            del timeList[i]
+
+
+    return timeList

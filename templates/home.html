@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Enter the Company name</title>
+    </head>
+
+    <body>
+        <form action="{{ url_for('accept') }}" method="post">
+            <input name="companyID" placeholder="Enter the company name">
+            <input name="companyCode" placeholder="Enter BSE code">
+            <input type="submit">
+        </form>
+    </body>
+</html>
