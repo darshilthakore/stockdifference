@@ -91,4 +91,4 @@ def api(companyCode,companyID):
             del apidata[i]
 
 
-    return apidata
+    return jsonify(apidata)
