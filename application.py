@@ -35,7 +35,8 @@ def accept():
         # print(i['dttm'])
     print(len(timeList))
 
-    dataNSE = nseData.json()['grapthData'] 
+    dataNSES = nseData.json()
+    dataNSE = dataNSES['grapthData'] 
 
     newNse = []
 
@@ -78,7 +79,8 @@ def api(companyCode,companyID):
         apidata[str(i['dttm'])].append(i['vale1'])
     
     
-    dataNSE = nseData.json()['grapthData']
+    dataNSES = nseData.json()
+    dataNSE = dataNSES['grapthData']
     
     for j in dataNSE:
         # print(time.ctime(j[0] / 1000 - (5*60*60) - (30*60)))
