@@ -1,11 +1,14 @@
 import requests
 import json
 import time
+import sys
+import logging
 
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 app = Flask(__name__)
 
-
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 
 @app.route("/")
 def index():
