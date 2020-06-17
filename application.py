@@ -92,3 +92,7 @@ def api(companyCode,companyID):
 
 
     return jsonify(apidata)
+
+if __name__ == "__main__":
+    app.debug = True
+    app.run()
