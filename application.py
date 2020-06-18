@@ -4,8 +4,19 @@ import time
 import sys
 import logging
 
+import redis
+from rq import Queue
+from worker import conn
+from functions import apicalls
+
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 app = Flask(__name__)
+
+
+q = Queue(connection=conn)
+
+
+
 
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
@@ -68,10 +79,23 @@ def api(companyCode,companyID):
     headers = {'user-agent': 'Python script'}
     companyCode = companyCode
     companyID = companyID
-    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=WIPROEQN", headers=headers).json()
-    print(nseData)
-    bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=").json()
+    # nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=WIPROEQN", headers=headers).json()
+    # print(nseData)
+    # bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=").json()
+    url1 = "https://www.nseindia.com/api/chart-databyindex?index=WIPROEQN"
+    url2 = "https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid="
     
+    job1 = q.enqueue(apicalls, url1)
+    while not job1.result:
+        time.sleep(2)
+        # print(job1.result)
+        nseData = job1.result
+    job2 = q.enqueue(apicalls, url2)
+    while not job2.result:
+        time.sleep(2)
+        # print(job2.result)
+        bseData = job2.result
+
 
     for i in json.loads(bseData['Data']):
         apidata[str(i['dttm'])] = []
