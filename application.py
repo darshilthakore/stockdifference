@@ -68,7 +68,7 @@ def api(companyCode,companyID):
     headers = {'user-agent': 'Python script'}
     companyCode = companyCode
     companyID = companyID
-    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=" + str(companyID) + "EQN", headers=headers).json()
+    nseData = requests.get("https://www.nseindia.com/api/chart-databyindex?index=WIPROEQN", headers=headers).json()
     print(nseData)
     bseData = requests.get("https://api.bseindia.com/BseIndiaAPI/api/StockReachGraph/w?scripcode=" + str(companyCode) + "&flag=0&fromdate=&todate=&seriesid=").json()
     
