@@ -6,7 +6,7 @@ chardet==3.0.4
 Click==7.0
 ConfigArgParse==1.2
 coursera-dl==0.11.5
-cryptography==2.8
+cryptography==3.2
 cycler==0.10.0
 Django==2.0.12
 django-cors-headers==3.2.1
