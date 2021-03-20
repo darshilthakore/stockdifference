@@ -29,7 +29,7 @@ importlib-metadata==1.6.0
 itsdangerous==1.1.0
 jeepney==0.4.3
 jellyfish==0.7.2
-Jinja2==2.10.3
+Jinja2==2.11.3
 keyring==21.2.0
 kiwisolver==1.2.0
 lib50==2.0.0
