@@ -13,7 +13,7 @@ django-cors-headers==3.2.1
 djangorestframework==3.11.0
 dnspython==1.16.0
 edx-dl==0.1.13
-eventlet==0.25.1
+eventlet==0.31.0
 Flask==1.1.1
 Flask-Login==0.4.1
 Flask-Session==0.3.1
