@@ -8,7 +8,7 @@ ConfigArgParse==1.2
 coursera-dl==0.11.5
 cryptography==2.8
 cycler==0.10.0
-Django==2.0.12
+Django==2.2.24
 django-cors-headers==3.2.1
 djangorestframework==3.11.0
 dnspython==1.16.0
